@@ -1,0 +1,341 @@
+import React, { useState, useEffect } from 'react';
+import { ShoppingCart, Package, BarChart3, MessageCircle, Plus, Minus } from 'lucide-react';
+
+const NoodleShopSystem = () => {
+  const [currentView, setCurrentView] = useState('shop');
+  const [cart, setCart] = useState([]);
+  const [inventory, setInventory] = useState({
+    noodles: { small: 100, big: 80, instant: 60, glass: 40 },
+    meat: { pork: 50, meatball: 100, organs: 30, redpork: 25 },
+    soup: { clear: 200, tomyum: 150, dry: 100, waterfall: 80 }
+  });
+  const [orders, setOrders] = useState([]);
+  const [showVtuber, setShowVtuber] = useState(false);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [userMessage, setUserMessage] = useState('');
+
+  const menuItems = [
+    { id: 1, name: 'เฉาก๋วยน้ำใส', price: 45, type: 'clear' },
+    { id: 2, name: 'เฉาก๋วยต้มยำ', price: 50, type: 'tomyum' },
+    { id: 3, name: 'เฉาก๋วยแห้ง', price: 45, type: 'dry' },
+    { id: 4, name: 'เฉาก๋วยน้ำตก', price: 55, type: 'waterfall' }
+  ];
+
+  const noodleTypes = [
+    { id: 'small', name: 'เส้นเล็ก', price: 0 },
+    { id: 'big', name: 'เส้นใหญ่', price: 0 },
+    { id: 'instant', name: 'บะหมี่', price: 5 },
+    { id: 'glass', name: 'วุ้นเส้น', price: 5 }
+  ];
+
+  const meatTypes = [
+    { id: 'pork', name: 'หมูสับ', price: 0 },
+    { id: 'meatball', name: 'ลูกชิ้น', price: 10 },
+    { id: 'organs', name: 'เครื่องใน', price: 15 },
+    { id: 'redpork', name: 'หมูแดง', price: 20 }
+  ];
+
+  const vtuberResponses = [
+    "สวัสดีค่ะ! วันนี้อยากทานเฉาก๋วยแบบไหนคะ? 🍜✨",
+    "แนะนำเฉาก๋วยต้มยำเลยค่ะ เผ็ดร้อนอร่อยมาก! 🌶️",
+    "ถ้าอยากอิ่มๆ ลองเพิ่มลูกชิ้นกับหมูแดงสิคะ 😋",
+    "เส้นเล็กกับน้ำใสคือคลาสสิคที่ไม่เคยผิดหวังเลยค่ะ! 💕",
+    "อยากทานแบบไหนบอกน้องเฉาได้เลยนะคะ~"
+  ];
+
+  const addToCart = (item, noodleType, meatType) => {
+    const newItem = {
+      id: Date.now(),
+      ...item,
+      noodleType,
+      meatType,
+      totalPrice: item.price + noodleType.price + meatType.price
+    };
+    setCart([...cart, newItem]);
+  };
+
+  const removeFromCart = (id) => {
+    setCart(cart.filter(item => item.id !== id));
+  };
+
+  const sendMessage = () => {
+    if (userMessage.trim()) {
+      setChatMessages([...chatMessages, 
+        { type: 'user', message: userMessage },
+        { type: 'vtuber', message: vtuberResponses[Math.floor(Math.random() * vtuberResponses.length)] }
+      ]);
+      setUserMessage('');
+    }
+  };
+
+  const calculateDailyNeeds = () => {
+    const avgOrdersPerDay = 50;
+    return {
+      noodles: {
+        small: Math.ceil(avgOrdersPerDay * 0.4),
+        big: Math.ceil(avgOrdersPerDay * 0.3),
+        instant: Math.ceil(avgOrdersPerDay * 0.2),
+        glass: Math.ceil(avgOrdersPerDay * 0.1)
+      },
+      meat: {
+        pork: Math.ceil(avgOrdersPerDay * 0.5),
+        meatball: Math.ceil(avgOrdersPerDay * 0.3),
+        organs: Math.ceil(avgOrdersPerDay * 0.1),
+        redpork: Math.ceil(avgOrdersPerDay * 0.1)
+      }
+    };
+  };
+
+  const ShopView = () => (
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-6 text-center">🍜 ร้านเฉาก๋วยน้องเฉา</h2>
+      <div className="grid md:grid-cols-2 gap-6">
+        {menuItems.map(item => (
+          <div key={item.id} className="bg-white rounded-lg shadow-md p-4">
+            <h3 className="text-lg font-semibold mb-2">{item.name}</h3>
+            <p className="text-xl font-bold text-orange-600 mb-4">฿{item.price}</p>
+            
+            <div className="mb-3">
+              <label className="block text-sm font-medium mb-1">เลือกเส้น:</label>
+              <select className="w-full border rounded p-2" id={`noodle-${item.id}`}>
+                {noodleTypes.map(noodle => (
+                  <option key={noodle.id} value={noodle.id}>
+                    {noodle.name} {noodle.price > 0 && `(+${noodle.price}฿)`}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">เลือกเนื้อ:</label>
+              <select className="w-full border rounded p-2" id={`meat-${item.id}`}>
+                {meatTypes.map(meat => (
+                  <option key={meat.id} value={meat.id}>
+                    {meat.name} {meat.price > 0 && `(+${meat.price}฿)`}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <button 
+              onClick={() => {
+                const noodleSelect = document.getElementById(`noodle-${item.id}`);
+                const meatSelect = document.getElementById(`meat-${item.id}`);
+                const selectedNoodle = noodleTypes.find(n => n.id === noodleSelect.value);
+                const selectedMeat = meatTypes.find(m => m.id === meatSelect.value);
+                addToCart(item, selectedNoodle, selectedMeat);
+              }}
+              className="w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600 transition-colors"
+            >
+              เพิ่มในตะกร้า
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const CartView = () => (
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-6">ตะกร้าสินค้า</h2>
+      {cart.length === 0 ? (
+        <p className="text-gray-500 text-center">ไม่มีสินค้าในตะกร้า</p>
+      ) : (
+        <div>
+          {cart.map(item => (
+            <div key={item.id} className="bg-white rounded-lg shadow-md p-4 mb-4">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="font-semibold">{item.name}</h3>
+                  <p className="text-sm text-gray-600">
+                    {item.noodleType.name} + {item.meatType.name}
+                  </p>
+                  <p className="text-lg font-bold text-orange-600">฿{item.totalPrice}</p>
+                </div>
+                <button 
+                  onClick={() => removeFromCart(item.id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                  ลบ
+                </button>
+              </div>
+            </div>
+          ))}
+          <div className="bg-orange-100 p-4 rounded-lg">
+            <div className="flex justify-between items-center">
+              <span className="text-lg font-semibold">รวม:</span>
+              <span className="text-xl font-bold text-orange-600">
+                ฿{cart.reduce((sum, item) => sum + item.totalPrice, 0)}
+              </span>
+            </div>
+            <button className="w-full bg-green-500 text-white py-2 rounded mt-3 hover:bg-green-600">
+              สั่งซื้อ
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  const InventoryView = () => {
+    const dailyNeeds = calculateDailyNeeds();
+    
+    return (
+      <div className="p-6">
+        <h2 className="text-2xl font-bold mb-6">จัดการคลังสินค้า</h2>
+        
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="bg-white rounded-lg shadow-md p-4">
+            <h3 className="text-lg font-semibold mb-4">เส้น</h3>
+            {Object.entries(inventory.noodles).map(([key, value]) => (
+              <div key={key} className="flex justify-between items-center mb-2">
+                <span>{noodleTypes.find(n => n.id === key)?.name}</span>
+                <div className="flex items-center gap-2">
+                  <span className={`font-bold ${value < dailyNeeds.noodles[key] ? 'text-red-500' : 'text-green-500'}`}>
+                    {value}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    (ต้องการ: {dailyNeeds.noodles[key]})
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-md p-4">
+            <h3 className="text-lg font-semibold mb-4">เนื้อ</h3>
+            {Object.entries(inventory.meat).map(([key, value]) => (
+              <div key={key} className="flex justify-between items-center mb-2">
+                <span>{meatTypes.find(m => m.id === key)?.name}</span>
+                <div className="flex items-center gap-2">
+                  <span className={`font-bold ${value < dailyNeeds.meat[key] ? 'text-red-500' : 'text-green-500'}`}>
+                    {value}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    (ต้องการ: {dailyNeeds.meat[key]})
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-md p-4">
+            <h3 className="text-lg font-semibold mb-4">แผนการจัดซื้อวันนี้</h3>
+            <div className="space-y-2">
+              <div className="p-3 bg-yellow-100 rounded">
+                <p className="font-medium">🛒 ต้องจัดซื้อ:</p>
+                <ul className="text-sm mt-1">
+                  <li>• เส้นเล็ก: 50 กก.</li>
+                  <li>• ลูกชิ้น: 3 กก.</li>
+                  <li>• หมูสับ: 5 กก.</li>
+                </ul>
+              </div>
+              <div className="p-3 bg-green-100 rounded">
+                <p className="font-medium">✅ เพียงพอ:</p>
+                <p className="text-sm">เส้นใหญ่, วุ้นเส้น</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const VtuberChat = () => (
+    <div className={`fixed bottom-4 right-4 bg-white rounded-lg shadow-lg transition-all duration-300 ${showVtuber ? 'w-80 h-96' : 'w-16 h-16'}`}>
+      {!showVtuber ? (
+        <button 
+          onClick={() => setShowVtuber(true)}
+          className="w-full h-full bg-pink-500 text-white rounded-lg hover:bg-pink-600 flex items-center justify-center text-2xl"
+        >
+          👩‍🍳
+        </button>
+      ) : (
+        <div className="p-4 h-full flex flex-col">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="font-bold text-pink-600">น้องเฉา AI 🍜</h3>
+            <button 
+              onClick={() => setShowVtuber(false)}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              ✕
+            </button>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto mb-3 space-y-2">
+            <div className="bg-pink-100 p-2 rounded-lg">
+              <p className="text-sm">สวัสดีค่ะ! น้องเฉาพร้อมแนะนำเมนูอร่อยๆ ให้เลยค่า~ 💕</p>
+            </div>
+            {chatMessages.map((msg, i) => (
+              <div key={i} className={`p-2 rounded-lg text-sm ${msg.type === 'user' ? 'bg-blue-100 ml-8' : 'bg-pink-100 mr-8'}`}>
+                {msg.message}
+              </div>
+            ))}
+          </div>
+          
+          <div className="flex gap-2">
+            <input 
+              value={userMessage}
+              onChange={(e) => setUserMessage(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+              placeholder="พิมพ์ข้อความ..."
+              className="flex-1 border rounded px-2 py-1 text-sm"
+            />
+            <button 
+              onClick={sendMessage}
+              className="bg-pink-500 text-white px-3 py-1 rounded text-sm hover:bg-pink-600"
+            >
+              ส่ง
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-pink-50">
+      {/* Navigation */}
+      <nav className="bg-white shadow-md p-4">
+        <div className="max-w-6xl mx-auto flex justify-between items-center">
+          <h1 className="text-xl font-bold text-orange-600">🍜 ร้านเฉาก๋วยน้องเฉา</h1>
+          <div className="flex gap-4">
+            <button 
+              onClick={() => setCurrentView('shop')}
+              className={`flex items-center gap-2 px-4 py-2 rounded ${currentView === 'shop' ? 'bg-orange-500 text-white' : 'bg-gray-200'}`}
+            >
+              <ShoppingCart size={16} />
+              ร้านค้า
+            </button>
+            <button 
+              onClick={() => setCurrentView('cart')}
+              className={`flex items-center gap-2 px-4 py-2 rounded ${currentView === 'cart' ? 'bg-orange-500 text-white' : 'bg-gray-200'}`}
+            >
+              <Package size={16} />
+              ตะกร้า ({cart.length})
+            </button>
+            <button 
+              onClick={() => setCurrentView('inventory')}
+              className={`flex items-center gap-2 px-4 py-2 rounded ${currentView === 'inventory' ? 'bg-orange-500 text-white' : 'bg-gray-200'}`}
+            >
+              <BarChart3 size={16} />
+              คลังสินค้า
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <div className="max-w-6xl mx-auto">
+        {currentView === 'shop' && <ShopView />}
+        {currentView === 'cart' && <CartView />}
+        {currentView === 'inventory' && <InventoryView />}
+      </div>
+
+      {/* AI Vtuber Chat */}
+      <VtuberChat />
+    </div>
+  );
+};
+
+export default NoodleShopSystem;
