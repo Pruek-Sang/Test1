@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElectroDesign Pro - รับออกแบบระบบไฟฟ้าบ้านพัก</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo::before {
+            content: "⚡";
+            margin-right: 10px;
+            font-size: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 4rem 0;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+        }
+
+        /* Services Section */
+        .services {
+            background: white;
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #4a5568;
+            margin-bottom: 3rem;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Portfolio Section */
+        .portfolio {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 4rem 0;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .portfolio-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .portfolio-item:hover {
+            transform: scale(1.02);
+        }
+
+        .portfolio-image {
+            height: 250px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+        }
+
+        .portfolio-content {
+            padding: 1.5rem;
+        }
+
+        /* AI VTuber Section */
+        .ai-section {
+            background: #1a202c;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .vtuber-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 3rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .vtuber-avatar {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .chat-button {
+            background: #00d4aa;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+
+        .chat-button:hover {
+            background: #00b894;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: white;
+            padding: 4rem 0;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .contact-info {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a202c;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .service-grid,
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Floating Elements */
+        .floating-icons {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+        }
+
+        .floating-icon {
+            width: 60px;
+            height: 60px;
+            background: #00d4aa;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 212, 170, 0.4);
+        }
+
+        .floating-icon:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">ElectroDesign Pro</div>
+            <ul class="nav-links">
+                <li><a href="#home">หน้าแรก</a></li>
+                <li><a href="#services">บริการ</a></li>
+                <li><a href="#portfolio">ผลงาน</a></li>
+                <li><a href="#ai-consult">AI ปรึกษา</a></li>
+                <li><a href="#contact">ติดต่อ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>รับออกแบบระบบไฟฟ้าบ้านพัก</h1>
+            <p>บริการออกแบบระบบไฟฟ้าครบวงจร ราคาเป็นกันเอง คุณภาพมาตรฐาน</p>
+            <a href="#contact" class="cta-button">ปรึกษาฟรี!</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">บริการของเรา</h2>
+            <div class="service-grid">
+                <div class="service-card">
+                    <div class="service-icon">🏠</div>
+                    <h3>บ้านเดี่ยว</h3>
+                    <p>ออกแบบระบบไฟฟ้าบ้านเดี่ยว 1-3 ชั้น พร้อมตารางโหลด และแผนผังวงจร</p>
+                    <strong>ราคาเริ่มต้น: 500 บาท</strong>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🏘️</div>
+                    <h3>ทาวน์เฮ้าส์</h3>
+                    <p>ระบบไฟฟ้าทาวน์เฮ้าส์และอาคารแถว ครบถ้วนตามมาตรฐาน</p>
+                    <strong>ราคาเริ่มต้น: 1,500 บาท</strong>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔧</div>
+                    <h3>ปรับปรุงระบบเดิม</h3>
+                    <p>วิเคราะห์และปรับปรุงระบบไฟฟ้าเดิม เพิ่มประสิทธิภาพและความปลอดภัย</p>
+                    <strong>ราคาเริ่มต้น: 500 บาท</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <h2 class="section-title">ผลงานของเรา</h2>
+            <div style="text-align: center; padding: 3rem; background: rgba(255,255,255,0.9); border-radius: 15px; margin-top: 2rem;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">📋</div>
+                <h3 style="color: #4a5568; margin-bottom: 1rem;">ผลงานจริงจะอัพเดทเร็วๆ นี้</h3>
+                <p style="color: #718096; font-size: 1.1rem;">เรากำลังเตรียมผลงานคุณภาพมาให้ชม<br>ติดตามได้ที่เพจ Facebook ของเรา</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI VTuber Section -->
+    <section id="ai-consult" class="ai-section">
+        <div class="container">
+            <div class="vtuber-container">
+                <div class="vtuber-avatar">🤖</div>
+                <h2>AI Assistant - วิศวกร Virtual</h2>
+                <p>ปรึกษาปัญหาเบื้องต้นกับ AI Assistant ของเรา ตอบคำถามได้ 24/7 และให้คำแนะนำเบื้องต้นเกี่ยวกับระบบไฟฟ้าในบ้าน</p>
+                <button class="chat-button" onclick="startAIChat()">เริ่มสนทนา</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">ติดต่อเรา</h2>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>📞 โทรศัพท์</h3>
+                    <p>089-xxx-xxxx</p>
+                    <p>เปิดให้บริการ: จันทร์-เสาร์ 8:00-18:00</p>
+                </div>
+                <div class="contact-info">
+                    <h3>📧 อีเมล</h3>
+                    <p>info@electrodesignpro.com</p>
+                    <p>ตอบภายใน 24 ชั่วโมง</p>
+                </div>
+                <div class="contact-info">
+                    <h3>💬 Line Official</h3>
+                    <p>@electrodesignpro</p>
+                    <p>สะดวก รวดเร็ว ตอบได้ทันที</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Icons -->
+    <div class="floating-icons">
+        <div class="floating-icon" onclick="openLineChat()" title="Line Chat">💬</div>
+        <div class="floating-icon" onclick="callPhone()" title="โทรหาเรา">📞</div>
+        <div class="floating-icon" onclick="scrollToTop()" title="กลับขึ้นบน">⬆️</div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 ElectroDesign Pro. All rights reserved. | รับออกแบบระบบไฟฟ้าบ้านพัก ราคาเป็นกันเอง</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // AI Chat function
+        function startAIChat() {
+            alert('🤖 สวัสดีครับ! ผมเป็น AI Assistant \n\nคุณสามารถถามเกี่ยวกับ:\n• ปัญหาไฟฟ้าเบื้องต้น\n• การวางแผนระบบไฟฟ้า\n• ราคาประมาณการ\n• ข้อแนะนำทั่วไป\n\n(ในอนาคตจะมี Chatbot จริง)');
+        }
+
+        // Contact functions
+        function openLineChat() {
+            alert('📱 เปิด Line แล้วค้นหา: @electrodesignpro\n\nหรือสแกน QR Code ที่เพจของเรา');
+        }
+
+        function callPhone() {
+            alert('📞 โทร: 089-xxx-xxxx\n\nเวลาทำการ: จันทร์-เสาร์ 8:00-18:00');
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe service cards and portfolio items
+        document.querySelectorAll('.service-card, .portfolio-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
